@@ -19,15 +19,27 @@ function App() {
   // Searchbox
   const [isLoading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  var query = "";
 
-  const handleSearchClick = (e) => {
+  const handleSearchClick = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    query = searchText;
-    console.log(`Query: '${query}'`);
-    
-    setLoading(true)
+    try {
+      const res = await fetch("http://localhost:3000/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query: searchText })
+      });
+
+      const data = await res.json();
+      console.log(data);
+      setQueryResults(fakeQuery);
+    } 
+    finally {
+      setLoading(false);
+    }   
   };
 
   // Results
@@ -38,24 +50,7 @@ function App() {
     if(!queryResultsActive) return;
     console.log(`Hash: '${queryResults[index].hash}'`)
   }
-
-  // Temp code for searchbox - replace with real network request to backend
-  useEffect(() => { 
-    function simulateNetworkRequest() {
-      return new Promise(resolve => {
-        setTimeout(resolve, 2000);
-      });
-    }
-
-    if (isLoading) {
-      simulateNetworkRequest().then(() => {
-        setQueryResults(fakeQuery);
-        setLoading(false);
-      });
-    }
-  }, [isLoading]);
   
-
   return (
     <>
       <section className='mediaTypeSelector'>
