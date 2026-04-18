@@ -3,6 +3,10 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Form from 'react-bootstrap/Form';
+import Badge from 'react-bootstrap/Badge';
+import ListGroup from 'react-bootstrap/ListGroup';
+
+import fakeQuery from './queryReturnTemplate.json'
 
 function App() {
   // Media Type
@@ -26,6 +30,15 @@ function App() {
     setLoading(true)
   };
 
+  // Results
+  const [queryResults, setQueryResults] = useState([]);
+  var queryResultsActive = () => { return queryResults !== []; }
+
+  const handleDownloadClick = (index) => {
+    if(!queryResultsActive) return;
+    console.log(`Hash: '${queryResults[index].hash}'`)
+  }
+
   // Temp code for searchbox - replace with real network request to backend
   useEffect(() => { 
     function simulateNetworkRequest() {
@@ -36,6 +49,7 @@ function App() {
 
     if (isLoading) {
       simulateNetworkRequest().then(() => {
+        setQueryResults(fakeQuery);
         setLoading(false);
       });
     }
@@ -94,6 +108,42 @@ function App() {
         <p>{searchText}</p>
       </section>
 
+      <section className='results'>
+        <ListGroup as="ol" numbered>
+
+        {queryResultsActive && 
+          queryResults.map((result, index) => {
+            return (
+              <ListGroup.Item
+                as="li"
+                className="d-flex justify-content-between align-items-start"
+                key={index}
+              >
+                <div className="ms-2 me-auto fw-bold">{result.name}</div>
+                
+                <Badge bg="success" pill>
+                  {result.seeders}
+                </Badge>
+                <Badge bg="danger" pill>
+                  {result.leachers}
+                </Badge>
+                <Badge bg="primary">
+                  {result.size} 
+                </Badge>
+                <Button
+                  size='sm'
+                  variant='outline-primary'
+                  onClick={() => handleDownloadClick(index)}
+                >
+                  Download
+                </Button>
+              </ListGroup.Item>
+            );
+          })
+        }
+
+        </ListGroup>
+      </section>
     </>
   )
 }
