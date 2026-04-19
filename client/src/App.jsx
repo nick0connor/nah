@@ -7,6 +7,7 @@ import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 
 import fakeQuery from './queryReturnTemplate.json'
+import './App.css';
 
 function App() {
   // Media Type
@@ -99,7 +100,7 @@ function App() {
           <Form.Control 
             type="text" 
             size='lg'
-            className='flex-grow-1'
+            className='flex-grow-1 darkbg-whitetext'
             style={{ flex: "0 0 80%" }}
             placeholder={mediaType == "movie" ? "Movie name" : "Show name"}
             value={searchText}
@@ -127,10 +128,10 @@ function App() {
             return (
               <ListGroup.Item
                 as="li"
-                className="d-flex justify-content-between align-items-start"
+                className="d-flex justify-content-between align-items-start darkbg-whitetext"
                 key={index}
               >
-                <div className="ms-2 me-auto fw-bold">{result.title}</div>
+                <p className="ms-2 me-auto text-wrap text-break fs-6 fw-normal">{result.title}</p>
                 
                 <Badge bg="success" pill>
                   ↑ {result.seeds}
@@ -141,13 +142,15 @@ function App() {
                 <Badge bg="primary">
                   {result.size} 
                 </Badge>
-                <Button
+                <Badge
+                  as={Button}
                   size='sm'
-                  variant='outline-primary'
+                  bg="light"
                   onClick={() => handleDownloadClick(index)}
+                  style={{color:"black"}}
                 >
                   Download
-                </Button>
+                </Badge>
               </ListGroup.Item>
             );
           })
