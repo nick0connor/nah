@@ -30,12 +30,15 @@ function App() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ query: searchText })
+        body: JSON.stringify({ 
+          query: searchText, 
+          media: mediaType
+        })
       });
 
       const data = await res.json();
-      console.log(data);
-      setQueryResults(fakeQuery);
+      console.log(data)
+      setQueryResults(data);
     } 
     finally {
       setLoading(false);
@@ -46,9 +49,24 @@ function App() {
   const [queryResults, setQueryResults] = useState([]);
   var queryResultsActive = () => { return queryResults !== []; }
 
-  const handleDownloadClick = (index) => {
+  const handleDownloadClick = async (_index) => {
     if(!queryResultsActive) return;
-    console.log(`Hash: '${queryResults[index].hash}'`)
+    
+    try{
+      const res = await fetch("http://localhost:3000/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({index: _index})
+      });
+
+      const data = await res.json();
+      console.log(data);
+    }
+    finally {
+      //
+    }
   }
   
   return (
@@ -99,8 +117,6 @@ function App() {
             {isLoading ? 'Searching...' : 'Search'}
           </Button>
         </Form>
-
-        <p>{searchText}</p>
       </section>
 
       <section className='results'>
@@ -114,13 +130,13 @@ function App() {
                 className="d-flex justify-content-between align-items-start"
                 key={index}
               >
-                <div className="ms-2 me-auto fw-bold">{result.name}</div>
+                <div className="ms-2 me-auto fw-bold">{result.title}</div>
                 
                 <Badge bg="success" pill>
-                  {result.seeders}
+                  ↑ {result.seeds}
                 </Badge>
                 <Badge bg="danger" pill>
-                  {result.leachers}
+                  ↓ {result.peers}
                 </Badge>
                 <Badge bg="primary">
                   {result.size} 
