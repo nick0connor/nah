@@ -5,6 +5,7 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Modal from 'react-bootstrap/Modal';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './App.css';
@@ -66,12 +67,46 @@ function App() {
       console.log(data);
     }
     finally {
-      //
+      setModalActive(true);
     }
+  }
+
+  // Modal
+  const [isModalActive, setModalActive] = useState(true);
+  function VerticallyCenteredModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Download Progress
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='danger'>Cancel</Button>
+          <Button 
+            variant='success'
+            // disabled={true}
+            onClick={() => setModalActive(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
   }
   
   return (
     <>
+      <VerticallyCenteredModal show={isModalActive}/>
+
       <section className='mediaTypeSelector'>
         <ButtonGroup>
           {radios.map((radio, idx) => (
