@@ -2,20 +2,40 @@ import express, { response } from "express";
 import cors from "cors";
 import TorrentSearchApi from 'torrent-search-api';
 import WebTorrent from "webtorrent";
+import { Server } from "socket.io";
+import { createServer } from 'node:http';
 
 import config from '../config.paths.json' with { type: 'json' };
 
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
 
-const client = new WebTorrent();
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
+
+const torrentClient = new WebTorrent();
 
 TorrentSearchApi.enablePublicProviders();
 var mostRecentTorrent = [];
 var mediaType = null;
+
+io.on('connection', (socket) => {
+  console.log("Client connected");
+
+  socket.on('disconnect', () => {
+    console.log('Client used a stun (disconnected)');
+  })
+});
+
+app.get('/', (req, res) => {
+  res.send('<h1>Server Active</h1>');
+}); 
 
 app.post("/search", async (req, res) => {
   const query = req.body.query;
@@ -29,13 +49,19 @@ app.post("/search", async (req, res) => {
 });
 
 
-function addTorrentAsync(client, magnet) {
+function addTorrentAsync(torrentClient, magnet) {
   return new Promise((resolve, reject) => {
-    client.add(magnet, { path: config[mediaType] }, (torrent) => {
+    torrentClient.add(magnet, { path: config[mediaType] }, (torrent) => {
 
       torrent.on('download', () => {
         const progress = (torrent.progress * 100).toFixed(2);
         const speed = (torrent.downloadSpeed / 1048576).toFixed(2);
+        
+        io.emit("progress", {
+          infoHash: torrent.infoHash,
+          progress: progress,
+          speed: speed
+        });
 
         process.stdout.write(`\rProgress: ${progress}% | Speed: ${speed} MB/s`)
       });
@@ -61,7 +87,7 @@ app.post("/confirm", async (req, res) => {
   const magnet = await TorrentSearchApi.getMagnet(selected);
 
   try {
-    const torrent = await addTorrentAsync(client, magnet);
+    const torrent = await addTorrentAsync(torrentClient, magnet);
     console.log(`Downloading ${torrent.infoHash}`);
 
     res.json({
@@ -78,6 +104,6 @@ app.post("/cancel", (req, res) => {
 
 });
 
-app.listen(3000, "0.0.0.0", () => {
+server.listen(3000, "0.0.0.0", () => {
   console.log("Server running on port 3000");
 });

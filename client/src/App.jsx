@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
+import { io } from 'socket.io-client';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './App.css';
@@ -39,7 +40,7 @@ function App() {
       });
 
       const data = await res.json();
-      console.log(data)
+      // console.log(data)
       setQueryResults(data);
     } 
     finally {
@@ -53,6 +54,8 @@ function App() {
 
   const handleDownloadClick = async (_index) => {
     if(!queryResultsActive) return;
+
+    console.log("Download Button Pressed");
     
     try{
       const res = await fetch("http://localhost:3000/confirm", {
@@ -64,15 +67,38 @@ function App() {
       });
 
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
     }
     finally {
       setModalActive(true);
     }
   }
 
+  // Socket
+  useEffect(() => {
+    const socket = io("http://localhost:3000");
+
+    socket.on("connect", () => {
+      console.log("Socket connected to server");
+    })
+
+    socket.on("progress", (progressData) => {
+      setDownloadProgress(progressData);
+    });
+
+    return () => {
+      console.log("Socket disconnected");
+      socket.disconnect();
+    };
+  }, []);
+
   // Modal
-  const [isModalActive, setModalActive] = useState(true);
+  const [isModalActive, setModalActive] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState({
+    infoHash: "",
+    progress: "",
+    speed: ""
+  })
   function VerticallyCenteredModal(props) {
     return (
       <Modal
@@ -83,23 +109,23 @@ function App() {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            Download Progress
+            Progress for {`${downloadProgress.infoHash}`}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          
+          {`Progress: ${downloadProgress.progress}%\nSpeed: ${downloadProgress.speed} MB/s`}
         </Modal.Body>
         <Modal.Footer>
           <Button 
             variant='danger'
-            disabled={true}
+            disabled={ downloadProgress.progress == "100.00" }
             onClick={handleCancelClick}
           >
             Cancel
           </Button>
           <Button 
             variant='success'
-            // disabled={true}
+            disabled={ downloadProgress.progress != "100.00" }
             onClick={() => setModalActive(false)}
           >
             Close
@@ -115,7 +141,7 @@ function App() {
   
   return (
     <>
-      <VerticallyCenteredModal show={isModalActive}/>
+      <VerticallyCenteredModal show={isModalActive} animation={false}/>
 
       <section className='mediaTypeSelector'>
         <ButtonGroup>
