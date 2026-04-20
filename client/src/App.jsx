@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
@@ -74,6 +74,9 @@ function App() {
     }
   }
 
+  // THROTTLE THE SOCKET UPDATES!!!!
+  const lastUpdateRef = useRef(0);
+
   // Socket
   useEffect(() => {
     const socket = io("http://localhost:3000");
@@ -83,7 +86,12 @@ function App() {
     })
 
     socket.on("progress", (progressData) => {
-      setDownloadProgress(progressData);
+      const now = Date.now();
+
+      if (now - lastUpdateRef.current > 500){ // 500 ms
+        setDownloadProgress(progressData);
+        lastUpdateRef.current = now;
+      }
     });
 
     return () => {
@@ -99,6 +107,29 @@ function App() {
     progress: "",
     speed: ""
   })
+  const handleCancelClick = async () => {
+    try{
+      console.log("Pressed Cancel");
+      const res = await fetch("http://localhost:3000/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ infoHash: downloadProgress.infoHash })
+      });
+      const data = await res.json();
+      console.log(data);
+    }
+    finally {
+      setDownloadProgress({
+        infoHash: "",
+        progress: "",
+        speed: ""
+      });
+      setModalActive(false);
+    }
+  }
+
   function VerticallyCenteredModal(props) {
     return (
       <Modal
@@ -118,8 +149,8 @@ function App() {
         <Modal.Footer>
           <Button 
             variant='danger'
-            disabled={ downloadProgress.progress == "100.00" }
-            onClick={handleCancelClick}
+            disabled={ false }
+            onClick={() => handleCancelClick()}
           >
             Cancel
           </Button>
@@ -133,10 +164,6 @@ function App() {
         </Modal.Footer>
       </Modal>
     );
-  }
-
-  const handleCancelClick = () => {
-    //
   }
   
   return (

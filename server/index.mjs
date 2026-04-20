@@ -101,7 +101,22 @@ app.post("/confirm", async (req, res) => {
 });
 
 app.post("/cancel", (req, res) => {
+  console.log("\nCANCEL!!");
+  
+  const torrent = torrentClient.get(req.body.infoHash);
 
+  if(!torrent){
+    return res.status(404).json({ error: "Could not find torrent to cancel" });
+  }
+
+  try {
+    torrentClient.destroy();
+    res.json({ response: "destroyed" });
+  } 
+  catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Torrent exists, failed to cancel" });
+  }
 });
 
 server.listen(3000, "0.0.0.0", () => {
