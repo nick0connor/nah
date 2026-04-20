@@ -90,7 +90,13 @@ function App() {
           
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='danger'>Cancel</Button>
+          <Button 
+            variant='danger'
+            disabled={true}
+            onClick={handleCancelClick}
+          >
+            Cancel
+          </Button>
           <Button 
             variant='success'
             // disabled={true}
@@ -101,6 +107,10 @@ function App() {
         </Modal.Footer>
       </Modal>
     );
+  }
+
+  const handleCancelClick = () => {
+    //
   }
   
   return (
