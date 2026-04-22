@@ -50,7 +50,7 @@ function App() {
 
   // Results
   const [queryResults, setQueryResults] = useState([]);
-  var queryResultsActive = () => { return queryResults !== []; }
+  var queryResultsActive = () => { return !queryResults || queryResults.length === 0 }
 
   const handleDownloadClick = async (_index) => {
     if(!queryResultsActive) return;
