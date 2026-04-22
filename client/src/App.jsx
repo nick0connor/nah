@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import { io } from 'socket.io-client';
 
 import fakeQuery from './queryReturnTemplate.json'
-import './App.css';
+import './style/App.css';
 
 function App() {
   // Media Type
