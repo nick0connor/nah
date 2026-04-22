@@ -1,29 +1,29 @@
 [
     {
-        "name":"Drive (2009)",
-        "seeders": "44",
-        "leachers": "3",
+        "title":"Drive (2009)",
+        "seeds": "44",
+        "peers": "3",
         "size": "12.1 GB",
         "hash": "11111"
     },
     {
-        "name":"The.Boys.S05E03.1080p.x265-ELiTE",
-        "seeders": "416",
-        "leachers": "334",
+        "title":"The.Boys.S05E03.1080p.x265-ELiTE",
+        "seeds": "416",
+        "peers": "334",
         "size": "1.0 GB",
         "hash": "22222"
     },
     {
-        "name":"Daredevil.Born.Again.S02E05.1080p.x265-ELiTE",
-        "seeders": "848",
-        "leachers": "576",
+        "title":"Daredevil.Born.Again.S02E05.1080p.x265-ELiTE",
+        "seeds": "848",
+        "peers": "576",
         "size": "709.3 MB",
         "hash": "33333"
     },
     {
-        "name":"Fred The Movie (2010) WEBRip.TubiTV.H264.AAC [movies978]",
-        "seeders": "0",
-        "leachers": "0",
+        "title":"Fred The Movie (2010) WEBRip.TubiTV.H264.AAC [movies978]",
+        "seeds": "0",
+        "peers": "0",
         "size": "1.0 GB",
         "hash": "44444"
     }
