@@ -16,18 +16,7 @@ import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
 
 function App() {
-  // Media Type
-  const [mediaType, setMediaType] = useState("movie")
-  const radios = [
-    { name:"Movie",   value:"movie" },
-    { name:"TV Show", value:"tvshow" }
-  ]
-
-  // Searchbox
-  const [isLoading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
-
-  const handleSearchClick = async (e) => {
+  const handleSearchClick = async (e, searchText, mediaType, setLoading) => {
     e.preventDefault();
     setLoading(true);
 
@@ -71,7 +60,7 @@ function App() {
       });
 
       const data = await res.json();
-      // console.log(data);
+      console.log(data);
     }
     finally {
       setModalActive(true);
@@ -144,32 +133,8 @@ function App() {
         show={isModalActive} animation={false}
       />
 
-      <section className='mediaTypeSelector'>
-        <ButtonGroup>
-          {radios.map((radio, idx) => (
-            <ToggleButton
-              key={idx}
-              id={`radio-${idx}`}
-              type="radio"
-              variant={mediaType === radio.value ? 'success' : 'outline-secondary'}
-              name="radio"
-              size="lg"
-              value={radio.value}
-              checked={mediaType === radio.value}
-              onChange={(e) => setMediaType(e.currentTarget.value)}
-            >
-              {radio.name}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-      </section>
-
       <Searchbox 
         searchClick={handleSearchClick}
-        mediaType={mediaType}
-        searchText={searchText}
-        setSearchText={setSearchText}
-        isLoading={isLoading}
       />
 
       <TorrentList
