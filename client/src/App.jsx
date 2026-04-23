@@ -1,16 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ToggleButton from 'react-bootstrap/ToggleButton';
-import Form from 'react-bootstrap/Form';
-import Badge from 'react-bootstrap/Badge';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Modal from 'react-bootstrap/Modal';
 import { io } from 'socket.io-client';
 
 import ProgressModal from './components/ProgressModal';
 import Searchbox from './components/Searchbox';
 import TorrentList from './components/TorrentList';
+
+import { search } from './services/api';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
@@ -21,20 +16,7 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ 
-          query: searchText, 
-          media: mediaType
-        })
-      });
-
-      const data = await res.json();
-      // console.log(data)
-      setQueryResults(data);
+      setQueryResults(await search(searchText, mediaType));
     } 
     finally {
       setLoading(false);
