@@ -5,7 +5,7 @@ import ProgressModal from './components/ProgressModal';
 import Searchbox from './components/Searchbox';
 import TorrentList from './components/TorrentList';
 
-import { search, download } from './services/api';
+import { search, download, cancel } from './services/api';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
@@ -74,18 +74,10 @@ function App() {
     progress: "",
     speed: ""
   })
+
   const handleCancelClick = async () => {
     try{
-      console.log("Pressed Cancel");
-      const res = await fetch("http://localhost:3000/cancel", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ infoHash: downloadProgress.infoHash })
-      });
-      const data = await res.json();
-      console.log(data);
+      console.log(await cancel(downloadProgress.infoHash));
     }
     finally {
       setDownloadProgress({
