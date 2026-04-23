@@ -8,6 +8,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 import { io } from 'socket.io-client';
 
+import ProgressModal from './components/ProgressModal';
+
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
 
@@ -130,45 +132,15 @@ function App() {
     }
   }
 
-  function VerticallyCenteredModal(props) {
-    return (
-      <Modal
-        {...props}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Progress for {`${downloadProgress.infoHash}`}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {`Progress: ${downloadProgress.progress}%\nSpeed: ${downloadProgress.speed} MB/s`}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button 
-            variant='danger'
-            disabled={ false }
-            onClick={() => handleCancelClick()}
-          >
-            Cancel
-          </Button>
-          <Button 
-            variant='success'
-            disabled={ downloadProgress.progress != "100.00" }
-            onClick={() => setModalActive(false)}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
   
   return (
     <>
-      <VerticallyCenteredModal show={isModalActive} animation={false}/>
+      <ProgressModal 
+        data={downloadProgress}
+        cancelClick={handleCancelClick}
+        closeClick={() => setModalActive(false)}
+        show={isModalActive} animation={false}
+      />
 
       <section className='mediaTypeSelector'>
         <ButtonGroup>
