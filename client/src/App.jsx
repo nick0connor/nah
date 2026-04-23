@@ -10,6 +10,7 @@ import { io } from 'socket.io-client';
 
 import ProgressModal from './components/ProgressModal';
 import Searchbox from './components/Searchbox';
+import TorrentList from './components/TorrentList';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
@@ -171,44 +172,11 @@ function App() {
         isLoading={isLoading}
       />
 
-      <section className='results'>
-        <ListGroup as="ol" numbered>
-
-        {queryResultsActive && 
-          queryResults.map((result, index) => {
-            return (
-              <ListGroup.Item
-                as="li"
-                className="d-flex justify-content-between align-items-start darkbg-whitetext"
-                key={index}
-              >
-                <p className="ms-2 me-auto text-wrap text-break fs-6 fw-normal">{result.title}</p>
-                
-                <Badge bg="success" pill>
-                  ↑ {result.seeds}
-                </Badge>
-                <Badge bg="danger" pill>
-                  ↓ {result.peers}
-                </Badge>
-                <Badge bg="primary">
-                  {result.size} 
-                </Badge>
-                <Badge
-                  as={Button}
-                  size='sm'
-                  bg="light"
-                  onClick={() => handleDownloadClick(index)}
-                  style={{color:"black"}}
-                >
-                  Download
-                </Badge>
-              </ListGroup.Item>
-            );
-          })
-        }
-
-        </ListGroup>
-      </section>
+      <TorrentList
+        queryResults={queryResults}
+        queryResultsActive={queryResultsActive}
+        downloadClick={handleDownloadClick}
+      />
     </>
   )
 }
