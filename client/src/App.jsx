@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import { io } from 'socket.io-client';
 
 import ProgressModal from './components/ProgressModal';
+import Searchbox from './components/Searchbox';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
@@ -162,33 +163,13 @@ function App() {
         </ButtonGroup>
       </section>
 
-      <section className='searchBox'>
-        <Form 
-          className='d-flex align-items-center gap-2 w-100'
-          onSubmit={handleSearchClick}
-        >
-          <Form.Control 
-            type="text" 
-            size='lg'
-            className='flex-grow-1 darkbg-whitetext'
-            style={{ flex: "0 0 80%" }}
-            placeholder={mediaType == "movie" ? "Movie name" : "Show name"}
-            value={searchText}
-            disabled={isLoading}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-
-          <Button 
-            variant='primary'
-            size='lg'
-            disabled={isLoading}
-            style={{ flex: "0 0 20%" }}
-            type='submit'
-          >
-            {isLoading ? 'Searching...' : 'Search'}
-          </Button>
-        </Form>
-      </section>
+      <Searchbox 
+        searchClick={handleSearchClick}
+        mediaType={mediaType}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        isLoading={isLoading}
+      />
 
       <section className='results'>
         <ListGroup as="ol" numbered>
