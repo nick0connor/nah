@@ -5,7 +5,7 @@ import ProgressModal from './components/ProgressModal';
 import Searchbox from './components/Searchbox';
 import TorrentList from './components/TorrentList';
 
-import { search } from './services/api';
+import { search, download } from './services/api';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
@@ -28,21 +28,13 @@ function App() {
   var queryResultsActive = () => { return !queryResults || queryResults.length === 0 }
 
   const handleDownloadClick = async (_index) => {
-    if(!queryResultsActive) return;
-
-    console.log("Download Button Pressed");
+    if(!queryResultsActive){
+      console.log("NO ACTIVE LIST: index pointing to nothing");
+      return;
+    }
     
     try{
-      const res = await fetch("http://localhost:3000/confirm", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({index: _index})
-      });
-
-      const data = await res.json();
-      console.log(data);
+      console.log(await download(_index));
     }
     finally {
       setModalActive(true);

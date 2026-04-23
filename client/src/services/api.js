@@ -12,3 +12,14 @@ export async function search(query, media) {
     return res.json();
 }
 
+export async function download(index) {
+    const res = await fetch(`${BASE_URL}/confirm`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ index })
+    });
+
+    return res.json();
+}
