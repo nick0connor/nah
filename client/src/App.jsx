@@ -14,7 +14,14 @@ import './style/App.css';
 function App() {
   const { downloadProgress, resetProgress } = useSocket();
 
-  const handleSearchClick = async (e, searchText, mediaType, setLoading) => {
+  const [mediaType, setMediaType] = useState("Movies")
+  const [isLoading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
+
+  const updateMediaType = (type) => { setMediaType(type); }
+  const updateSearchText = (text) => { setSearchText(text) }
+
+  const handleSearchClick = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -69,6 +76,11 @@ function App() {
 
       <Searchbox 
         searchClick={handleSearchClick}
+        mediaType={mediaType}
+        updateMediaType={updateMediaType}
+        searchText={searchText}
+        updateSearchText={updateSearchText}
+        isLoading={isLoading}
       />
 
       <TorrentList

@@ -4,14 +4,19 @@ import Form from 'react-bootstrap/Form';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
-function Searchbox({ searchClick }) {
-  const [mediaType, setMediaType] = useState("movie")
+function Searchbox({ 
+  searchClick, 
+  mediaType, 
+  updateMediaType, 
+  searchText, 
+  updateSearchText, 
+  isLoading 
+}) {
+  
   const radios = [
-    { name: "Movie", value: "movie" },
-    { name: "TV Show", value: "tvshow" }
+    { name: "Movie", value: "Movies" },
+    { name: "TV Show", value: "TV" }
   ]
-  const [isLoading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
 
   return (<>
     {/* Media Buttons */}
@@ -26,7 +31,7 @@ function Searchbox({ searchClick }) {
           size="lg"
           value={radio.value}
           checked={mediaType === radio.value}
-          onChange={(e) => setMediaType(e.currentTarget.value)}
+          onChange={(e) => updateMediaType(e.currentTarget.value)}
         >
           {radio.name}
         </ToggleButton>
@@ -36,17 +41,17 @@ function Searchbox({ searchClick }) {
     {/* Input Box + Button */}
     <Form
       className='d-flex align-items-center gap-2 w-100'
-      onSubmit={(e) => searchClick(e, searchText, mediaType, setLoading)}
+      onSubmit={(e) => searchClick(e)}
     >
       <Form.Control
         type="text"
         size='lg'
         className='flex-grow-1 darkbg-whitetext'
         style={{ flex: "0 0 80%" }}
-        placeholder={mediaType == "movie" ? "Movie name" : "Show name"}
+        placeholder={mediaType == "Movies" ? "Movie name" : "Show name"}
         value={searchText}
         disabled={isLoading}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={(e) => updateSearchText(e.target.value)}
       />
 
       <Button
