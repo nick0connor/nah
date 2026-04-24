@@ -6,11 +6,14 @@ import Searchbox from './components/Searchbox';
 import TorrentList from './components/TorrentList';
 
 import { search, download, cancel } from './services/api';
+import { useSocket } from './hooks/useSocket';
 
 import fakeQuery from './queryReturnTemplate.json'
 import './style/App.css';
 
 function App() {
+  const { downloadProgress, resetProgress } = useSocket();
+
   const handleSearchClick = async (e, searchText, mediaType, setLoading) => {
     e.preventDefault();
     setLoading(true);
@@ -25,14 +28,14 @@ function App() {
 
   // Results
   const [queryResults, setQueryResults] = useState([]);
-  var queryResultsActive = () => { return !queryResults || queryResults.length === 0 }
+  let queryHasResults = (queryResults && queryResults.length > 0);
 
   const handleDownloadClick = async (_index) => {
-    if(!queryResultsActive){
+    if(!queryHasResults){
       console.log("NO ACTIVE LIST: index pointing to nothing");
       return;
     }
-    
+    console.log('Download clicked')
     try{
       console.log(await download(_index));
     }
@@ -41,50 +44,15 @@ function App() {
     }
   }
 
-  // THROTTLE THE SOCKET UPDATES!!!!
-  const lastUpdateRef = useRef(0);
-
-  // Socket
-  useEffect(() => {
-    const socket = io("http://localhost:3000");
-
-    socket.on("connect", () => {
-      console.log("Socket connected to server");
-    })
-
-    socket.on("progress", (progressData) => {
-      const now = Date.now();
-
-      if (now - lastUpdateRef.current > 500){ // 500 ms
-        setDownloadProgress(progressData);
-        lastUpdateRef.current = now;
-      }
-    });
-
-    return () => {
-      console.log("Socket disconnected");
-      socket.disconnect();
-    };
-  }, []);
-
   // Modal
   const [isModalActive, setModalActive] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState({
-    infoHash: "",
-    progress: "",
-    speed: ""
-  })
 
   const handleCancelClick = async () => {
     try{
       console.log(await cancel(downloadProgress.infoHash));
     }
     finally {
-      setDownloadProgress({
-        infoHash: "",
-        progress: "",
-        speed: ""
-      });
+      resetProgress();
       setModalActive(false);
     }
   }
@@ -105,7 +73,7 @@ function App() {
 
       <TorrentList
         queryResults={queryResults}
-        queryResultsActive={queryResultsActive}
+        queryResultsActive={queryHasResults}
         downloadClick={handleDownloadClick}
       />
     </>
