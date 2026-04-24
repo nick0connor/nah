@@ -4,14 +4,14 @@ import Button from 'react-bootstrap/esm/Button';
 
 function TorrentList({
   queryResults,
-  queryResultsActive,
+  queryHasResults,
   downloadClick
 }) {
 
   return (<>
     <ListGroup as="ol" numbered>
 
-      {queryResultsActive &&
+      {queryHasResults &&
         queryResults.map((result, index) => {
           return (
             <ListGroup.Item
