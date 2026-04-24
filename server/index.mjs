@@ -39,9 +39,9 @@ app.get('/', (req, res) => {
 
 app.post("/search", async (req, res) => {
   const query = req.body.query;
-  mediaType = (req.body.media == "movie") ? "Movies" : "TV";
+  // mediaType = (req.body.media == "movie") ? "Movies" : "TV";
 
-  console.log(`Received ${mediaType}: '${query}'`)
+  console.log(`Received ${req.body.media}: '${query}'`)
 
   mostRecentTorrent = await TorrentSearchApi.search(query, mediaType, 20);
 
