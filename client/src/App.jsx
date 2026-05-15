@@ -4,6 +4,7 @@ import Searchbox from './components/Searchbox';
 import TorrentList from './components/TorrentList';
 import { useTorrentManager } from './hooks/useTorrentManager';
 import { useSocket } from './hooks/useSocket';
+import SocketToast from "./components/SocketToast";
 import './style/App.css';
 
 // ALL CODE HERE IS UI OR CALLING LOGIC/DATA FUNCTIONS
@@ -44,7 +45,7 @@ function App() {
 
   return (
     <>
-      <p style={{color:"white"}}>Socket is {isSocketOnline ? "Online" : "Offline"}</p>
+      <SocketToast isSocketOnline={isSocketOnline} />
 
       <ProgressModal
         data={downloadProgress}
