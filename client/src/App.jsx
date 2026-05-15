@@ -8,7 +8,7 @@ import './style/App.css';
 
 // ALL CODE HERE IS UI OR CALLING LOGIC/DATA FUNCTIONS
 function App() {
-  const { downloadProgress, resetProgress } = useSocket();
+  const { downloadProgress, resetProgress, isSocketOnline } = useSocket();
 
   const {
     queryResults,
@@ -44,6 +44,8 @@ function App() {
 
   return (
     <>
+      <p style={{color:"white"}}>Socket is {isSocketOnline ? "Online" : "Offline"}</p>
+
       <ProgressModal
         data={downloadProgress}
         cancelClick={handleCancelClick}

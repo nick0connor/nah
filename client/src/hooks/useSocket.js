@@ -16,6 +16,8 @@ export function useSocket() {
         });
     }
 
+    const [isSocketOnline, setSocketOnline] = useState(false);
+
     // THROTTLE THE SOCKET UPDATES!!!!
     const lastUpdateRef = useRef(0);
 
@@ -25,6 +27,7 @@ export function useSocket() {
 
         socket.on("connect", () => {
             console.log("Socket connected to server");
+            setSocketOnline(true);
         })
 
         socket.on("progress", (progressData) => {
@@ -39,8 +42,9 @@ export function useSocket() {
         return () => {
             console.log("Socket disconnected");
             socket.disconnect();
+            setSocketOnline(false);
         };
     }, []);
 
-    return { downloadProgress, resetProgress };
+    return { downloadProgress, resetProgress, isSocketOnline };
 }
