@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProgressModal from './components/ProgressModal';
 import Searchbox from './components/Searchbox';
 import TorrentList from './components/TorrentList';
@@ -48,6 +48,17 @@ function App() {
     setModalActive(false);
   };
 
+  // Redirect to settings if config paths are empty
+  useEffect(() => {
+    fetch('http://localhost:3000/settings/paths')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.Movies || !data.TV) {
+          window.location.href = '/settings';
+        }
+      });
+  }, []);
+
   return (
     <>
       <SocketToast isSocketOnline={isSocketOnline} />
@@ -61,7 +72,7 @@ function App() {
         cancelClick={handleCancelClick}
         closeClick={() => setModalActive(false)}
         show={isModalActive} animation={false}
-        />
+      />
 
       {isDownloadLoading && <LoadingOverlay />}
 
