@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = '';
 
 export async function search(query, media) {
     const res = await fetch(`${BASE_URL}/search`, {
