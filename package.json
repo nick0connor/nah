@@ -1,0 +1,25 @@
+{
+  "name": "Netflix at Home",
+  "version": "1.0.0",
+  "description": "This is an all-in-one tool for torrent searching and installation, specifically for use with another service like Plex or Jellyfin.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix client\" \"node server/index.mjs\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nick0connor/nah.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/nick0connor/nah/issues"
+  },
+  "homepage": "https://github.com/nick0connor/nah#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
