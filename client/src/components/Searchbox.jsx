@@ -38,6 +38,8 @@ function Searchbox({
       ))}
     </ButtonGroup>
 
+    <div style={{'padding-top': '4px', 'padding-bottom': '4px'}}/>
+
     {/* Input Box + Button */}
     <Form
       className='d-flex align-items-center gap-2 w-100'
