@@ -1,6 +1,5 @@
 import express, { response } from "express";
 import cors from "cors";
-import TorrentSearchApi from 'torrent-search-api';
 import { Server } from "socket.io";
 import { createServer } from 'node:http';
 import fs from 'fs';
@@ -9,12 +8,14 @@ import { createRequire } from 'module';
 
 import torrentClient from "./TorrentClient.mjs";
 import settingsRouter from './routes/settings.mjs';
+import searchRouter from './routes/search.mjs';
 import config from '../config.paths.json' with { type: 'json' };
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/settings', settingsRouter);
+app.use('/', searchRouter);
 
 const server = createServer(app);
 const io = new Server(server, {
@@ -24,9 +25,6 @@ const io = new Server(server, {
   }
 });
 
-TorrentSearchApi.enablePublicProviders();
-var mostRecentTorrent = [];
-var mediaType = null;
 
 io.on('connection', (socket) => {
   console.log("Client connected");
@@ -40,16 +38,7 @@ app.get('/', (req, res) => {
   res.send('<h1>Server Active</h1>');
 }); 
 
-app.post("/search", async (req, res) => {
-  const query = req.body.query;
-  mediaType = req.body.media;
 
-  console.log(`Received ${mediaType}: '${query}'`)
-
-  mostRecentTorrent = await TorrentSearchApi.search(query, mediaType, 20);
-
-  res.json(mostRecentTorrent);
-});
 
 
 function addTorrentAsync(torrentClient, magnet) {
