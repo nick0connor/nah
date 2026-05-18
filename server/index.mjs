@@ -27,10 +27,6 @@ io.on('connection', (socket) => {
   })
 });
 
-app.get('/', (req, res) => {
-  res.send('<h1>Server Active</h1>');
-}); 
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Serve frontend in production
