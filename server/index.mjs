@@ -1,13 +1,13 @@
 import express, { response } from "express";
 import cors from "cors";
 import TorrentSearchApi from 'torrent-search-api';
-import WebTorrent from "webtorrent";
 import { Server } from "socket.io";
 import { createServer } from 'node:http';
 import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
 
+import torrentClient from "./TorrentClient.mjs";
 import settingsRouter from './routes/settings.mjs';
 import config from '../config.paths.json' with { type: 'json' };
 
@@ -22,11 +22,6 @@ const io = new Server(server, {
     origin: "http://localhost:5173",
     methods: ["GET", "POST"]
   }
-});
-
-const torrentClient = new WebTorrent({ torrentPort: 6882, dhtPort: 6883 });
-torrentClient.on('error', (err) => {
-  console.error('WebTorrent Error: ', err.message);
 });
 
 TorrentSearchApi.enablePublicProviders();
