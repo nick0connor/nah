@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import { fileURLToPath } from 'url';
+import path from 'path';
+
 import { createServer } from 'node:http';
 import { initSocket } from "./socket.mjs";
 import settingsRouter from './routes/settings.mjs';
@@ -27,6 +30,15 @@ io.on('connection', (socket) => {
 app.get('/', (req, res) => {
   res.send('<h1>Server Active</h1>');
 }); 
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Serve frontend in production
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+app.get('/{*splat}', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
 server.listen(3000, "0.0.0.0", () => {
   console.log("Server running on port 3000");
