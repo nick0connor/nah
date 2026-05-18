@@ -1,10 +1,6 @@
-import express, { response } from "express";
+import express from "express";
 import cors from "cors";
 import { createServer } from 'node:http';
-import fs from 'fs';
-import path from 'path';
-import { createRequire } from 'module';
-
 import { initSocket } from "./socket.mjs";
 import settingsRouter from './routes/settings.mjs';
 import searchRouter from './routes/search.mjs';
