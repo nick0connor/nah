@@ -1,30 +1,24 @@
 import express, { response } from "express";
 import cors from "cors";
-import { Server } from "socket.io";
 import { createServer } from 'node:http';
 import fs from 'fs';
 import path from 'path';
 import { createRequire } from 'module';
 
-import torrentClient from "./TorrentClient.mjs";
+import { initSocket } from "./socket.mjs";
 import settingsRouter from './routes/settings.mjs';
 import searchRouter from './routes/search.mjs';
-import config from '../config.paths.json' with { type: 'json' };
+import torrentRouter from './routes/torrent.mjs'
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/settings', settingsRouter);
 app.use('/', searchRouter);
+app.use('/', torrentRouter);
 
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
-  }
-});
-
+const io = initSocket(server);
 
 io.on('connection', (socket) => {
   console.log("Client connected");
@@ -37,94 +31,6 @@ io.on('connection', (socket) => {
 app.get('/', (req, res) => {
   res.send('<h1>Server Active</h1>');
 }); 
-
-
-
-
-function addTorrentAsync(torrentClient, magnet) {
-  return new Promise((resolve, reject) => {
-    torrentClient.add(magnet, { path: config[mediaType] }, (torrent) => {
-
-      torrent.on('download', () => {
-        const progress = (torrent.progress * 100).toFixed(2);
-        const speed = (torrent.downloadSpeed / 1048576).toFixed(2);
-        
-        io.emit("progress", {
-          infoHash: torrent.infoHash,
-          progress: progress,
-          speed: speed
-        });
-
-        process.stdout.write(`\rProgress: ${progress}% | Speed: ${speed} MB/s`)
-      });
-
-      torrent.on("done", () => {
-        process.stdout.write("\n");
-        console.log("Download complete:", torrent.infoHash);
-      });
-
-      torrent.on("error", reject);
-
-      resolve(torrent);
-    });
-  })
-}
-
-app.post("/confirm", async (req, res) => {
-  if(!mostRecentTorrent || mostRecentTorrent.length === 0) {
-    return res.status(400).json({ error: "No active torrent(s)" });
-  }
-
-  const selected = mostRecentTorrent[parseInt(req.body.index)];
-  const magnet = await TorrentSearchApi.getMagnet(selected);
-
-  try {
-    const torrent = await addTorrentAsync(torrentClient, magnet);
-    console.log(`Downloading ${torrent.infoHash}`);
-
-    res.json({
-      response: "started",
-      infoHash: torrent.infoHash
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to start torrent" });
-  }
-});
-
-app.post("/cancel", async (req, res) => {
-  console.log("\nCANCEL!!");
-
-  const torrent = await torrentClient.get(req.body.infoHash);
-
-  if (!torrent) {
-    return res.status(404).json({ error: "Could not find torrent to cancel" });
-  }
-
-  const torrentPath = torrent.path;
-  const torrentFolder = path.join(torrentPath, torrent.name);
-  const torrentFiles = torrent.files.map(f => path.join(torrentPath, f.path));
-
-  torrent.destroy({}, (err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Torrent Exists, Failed to Cancel " });
-    }
-
-    for (const filePath of torrentFiles) {
-      fs.rm(filePath, { recursive: true, force: true }, (fsErr) => {
-        if (fsErr) console.log("Failed to delete file: ", fsErr.message);
-      });
-    }
-
-    fs.rm(torrentFolder, { recursive: true, force: true }, (fsErr) => {
-      if (fsErr) console.log("Failed to delete folder: ", fsErr.message);
-    });
-
-    res.json({ response: "destroyed" });
-  })
-});
-
 
 server.listen(3000, "0.0.0.0", () => {
   console.log("Server running on port 3000");
