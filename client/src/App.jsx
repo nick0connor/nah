@@ -22,13 +22,13 @@ function App() {
   } = useTorrentManager();
 
   const [isModalActive, setModalActive] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+  const [isSearchLoading, setSearchLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
 
   const handleSearchClick = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    handleSearch(searchText, mediaType).finally(() => setLoading(false));
+    setSearchLoading(true);
+    handleSearch(searchText, mediaType).finally(() => setSearchLoading(false));
   };
 
   const handleDownloadClick = async (index) => {
@@ -60,7 +60,7 @@ function App() {
         updateMediaType={updateMediaType}
         searchText={searchText}
         updateSearchText={setSearchText}
-        isLoading={isLoading}
+        isLoading={isSearchLoading}
       />
 
       <TorrentList
