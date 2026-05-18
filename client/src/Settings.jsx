@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function Settings() {
 
@@ -26,6 +27,10 @@ function Settings() {
 
   return (
     <>
+      <a href="/" style={{ position: 'fixed', top: '16px', left: '16px' }}>
+        <i className="bi bi-house-fill" style={{ fontSize: '1.5rem', color: 'white' }} />
+      </a>
+
       <Button
         variant={isEditingAllowed ? 'success' : 'danger'}
         onClick={() => setEditingAllowed(!isEditingAllowed)}

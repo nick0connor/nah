@@ -6,6 +6,7 @@ import { useTorrentManager } from './hooks/useTorrentManager';
 import { useSocket } from './hooks/useSocket';
 import SocketToast from "./components/SocketToast";
 import LoadingOverlay from './components/LoadingOverlay';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import './style/App.css';
 
 // ALL CODE HERE IS UI OR CALLING LOGIC/DATA FUNCTIONS
@@ -50,6 +51,10 @@ function App() {
   return (
     <>
       <SocketToast isSocketOnline={isSocketOnline} />
+
+      <a href="/settings" style={{ position: 'fixed', top: '16px', left: '16px' }}>
+        <i className="bi bi-gear-fill" style={{ fontSize: '1.5rem', color: 'white' }} />
+      </a>
 
       <ProgressModal
         data={downloadProgress}
