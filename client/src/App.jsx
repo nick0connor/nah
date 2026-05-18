@@ -33,14 +33,14 @@ function App() {
 
   const handleDownloadClick = async (index) => {
     console.log('Download clicked')
-    handleDownload(index).finally(() => setModalActive(true));
+    const result = await handleDownload(index);
+    setModalActive(true);
   };
 
   const handleCancelClick = async () => {
-    handleCancel(downloadProgress.infoHash).finally(() => {
-      resetProgress();
-      setModalActive(false);
-    });
+    const result = await handleCancel();
+    resetProgress();
+    setModalActive(false);
   };
 
   return (

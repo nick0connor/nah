@@ -7,21 +7,25 @@ export function useTorrentManager(){
     const [mediaType, setMediaType] = useState("Movies");
     const [queryResults, setQueryResults] = useState([]);
 
-    let queryHasResults = (queryResults && queryResults.length > 0);
+    const queryHasResults = () => ( queryResults && queryResults.length > 0);
 
     const handleSearch = async (searchText, mediaType) => {
         const results = await search(searchText, mediaType)
         setQueryResults(results);
     };
 
+    const [currentInfoHash, setCurrentInfoHash] = useState("");
+    
     const handleDownload = async (index) => {
         if(!queryHasResults) return;
         const results = await download(index);
+        setCurrentInfoHash(results.infoHash);
         return results;
     };
 
-    const handleCancel = async (infoHash) => {
-        const results = await cancel(infoHash);
+    const handleCancel = async () => {
+        const results = await cancel(currentInfoHash);
+        setCurrentInfoHash("");
         return results;
     };
 

@@ -4,6 +4,8 @@ import TorrentSearchApi from 'torrent-search-api';
 import WebTorrent from "webtorrent";
 import { Server } from "socket.io";
 import { createServer } from 'node:http';
+import fs from 'fs';
+import path from 'path';
 
 import config from '../config.paths.json' with { type: 'json' };
 
@@ -19,7 +21,10 @@ const io = new Server(server, {
   }
 });
 
-const torrentClient = new WebTorrent();
+const torrentClient = new WebTorrent({ torrentPort: 6882, dhtPort: 6883 });
+torrentClient.on('error', (err) => {
+  console.error('WebTorrent Error: ', err.message);
+});
 
 TorrentSearchApi.enablePublicProviders();
 var mostRecentTorrent = [];
@@ -100,23 +105,37 @@ app.post("/confirm", async (req, res) => {
   }
 });
 
-app.post("/cancel", (req, res) => {
+app.post("/cancel", async (req, res) => {
   console.log("\nCANCEL!!");
-  
-  const torrent = torrentClient.get(req.body.infoHash);
 
-  if(!torrent){
+  const torrent = await torrentClient.get(req.body.infoHash);
+
+  if (!torrent) {
     return res.status(404).json({ error: "Could not find torrent to cancel" });
   }
 
-  try {
-    torrentClient.destroy();
+  const torrentPath = torrent.path;
+  const torrentFolder = path.join(torrentPath, torrent.name);
+  const torrentFiles = torrent.files.map(f => path.join(torrentPath, f.path));
+
+  torrent.destroy({}, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Torrent Exists, Failed to Cancel " });
+    }
+
+    for (const filePath of torrentFiles) {
+      fs.rm(filePath, { recursive: true, force: true }, (fsErr) => {
+        if (fsErr) console.log("Failed to delete file: ", fsErr.message);
+      });
+    }
+
+    fs.rm(torrentFolder, { recursive: true, force: true }, (fsErr) => {
+      if (fsErr) console.log("Failed to delete folder: ", fsErr.message);
+    });
+
     res.json({ response: "destroyed" });
-  } 
-  catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Torrent exists, failed to cancel" });
-  }
+  })
 });
 
 server.listen(3000, "0.0.0.0", () => {
