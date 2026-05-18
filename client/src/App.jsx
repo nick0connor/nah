@@ -5,6 +5,7 @@ import TorrentList from './components/TorrentList';
 import { useTorrentManager } from './hooks/useTorrentManager';
 import { useSocket } from './hooks/useSocket';
 import SocketToast from "./components/SocketToast";
+import LoadingOverlay from './components/LoadingOverlay';
 import './style/App.css';
 
 // ALL CODE HERE IS UI OR CALLING LOGIC/DATA FUNCTIONS
@@ -24,6 +25,7 @@ function App() {
   const [isModalActive, setModalActive] = useState(false);
   const [isSearchLoading, setSearchLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [isDownloadLoading, setDownloadLoading] = useState(false);
 
   const handleSearchClick = async (e) => {
     e.preventDefault();
@@ -33,7 +35,9 @@ function App() {
 
   const handleDownloadClick = async (index) => {
     console.log('Download clicked')
+    setDownloadLoading(true);
     const result = await handleDownload(index);
+    setDownloadLoading(false);
     setModalActive(true);
   };
 
@@ -52,7 +56,9 @@ function App() {
         cancelClick={handleCancelClick}
         closeClick={() => setModalActive(false)}
         show={isModalActive} animation={false}
-      />
+        />
+
+      {isDownloadLoading && <LoadingOverlay />}
 
       <Searchbox
         searchClick={handleSearchClick}
