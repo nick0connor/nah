@@ -6,6 +6,8 @@ import { Server } from "socket.io";
 import { createServer } from 'node:http';
 import fs from 'fs';
 import path from 'path';
+import { createRequire } from 'module';
+import { fileURLToPath } from "node:url";
 
 import config from '../config.paths.json' with { type: 'json' };
 
@@ -136,6 +138,30 @@ app.post("/cancel", async (req, res) => {
 
     res.json({ response: "destroyed" });
   })
+});
+
+const require = createRequire(import.meta.url);
+const configPath = fileURLToPath(new URL('../config.paths.json', import.meta.url));
+
+app.get('/settings/paths', (req, res) => {
+  try {
+    const data = fs.readFileSync(configPath, 'utf-8');
+    res.json(JSON.parse(data));
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read paths" });
+  }
+});
+
+app.post('/settings/paths', (req, res) => {
+  const { Movies, TV } = req.body;
+
+  try {
+    const updated = { Movies, TV };
+    fs.writeFileSync(configPath, JSON.stringify(updated, null, 2));
+    res.json({ response: "saved" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save paths" });
+  }
 });
 
 server.listen(3000, "0.0.0.0", () => {
