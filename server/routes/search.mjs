@@ -1,10 +1,8 @@
 import express from "express";
-import TorrentSearchApi from 'torrent-search-api';
+import TorrentSearchApi from "../TorrentSearchApi.mjs";
 import { mostRecentTorrent, mediaType, setMostRecentTorrent, setMediaType } from "../state.mjs";
 
 const router = express.Router();
-
-TorrentSearchApi.enablePublicProviders();
 
 router.post("/search", async (req, res) => {
   const query = req.body.query;
