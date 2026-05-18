@@ -59,7 +59,7 @@ function Settings() {
 
           <hr />
 
-          <Button onClick={handleSubmit}>Submit Changes</Button>
+          <Button onClick={handleSubmit} disabled={!isEditingAllowed}>Submit Changes</Button>
         </Form>
       </section>
     </>
