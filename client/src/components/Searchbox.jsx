@@ -3,6 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import '../style/Searchbox.css';
 
 function Searchbox({ 
   searchClick, 
@@ -48,8 +50,7 @@ function Searchbox({
       <Form.Control
         type="text"
         size='lg'
-        className='flex-grow-1 darkbg-whitetext'
-        style={{ flex: "0 0 80%" }}
+        className='search-input darkbg-whitetext'
         placeholder={mediaType == "Movies" ? "Movie name" : "Show name"}
         value={searchText}
         disabled={isLoading}
@@ -60,10 +61,10 @@ function Searchbox({
         variant='primary'
         size='lg'
         disabled={isLoading}
-        style={{ flex: "0 0 20%" }}
+        className='search-button'
         type='submit'
       >
-        {isLoading ? 'Searching...' : 'Search'}
+        <i class="bi bi-search"></i>
       </Button>
     </Form>
   </>);
