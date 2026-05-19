@@ -40,7 +40,7 @@ function Searchbox({
       ))}
     </ButtonGroup>
 
-    <div style={{'padding-top': '4px', 'padding-bottom': '4px'}}/>
+    <div style={{paddingTop: '4px', paddingBottom: '4px'}}/>
 
     {/* Input Box + Button */}
     <Form
@@ -64,7 +64,7 @@ function Searchbox({
         className='search-button'
         type='submit'
       >
-        <i class="bi bi-search"></i>
+        <i className="bi bi-search"></i>
       </Button>
     </Form>
   </>);

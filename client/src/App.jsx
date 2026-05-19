@@ -85,7 +85,7 @@ function App() {
         isLoading={isSearchLoading}
       />
 
-      <div style={{'padding-top': '4px', 'padding-bottom': '4px'}}/>
+      <div style={{paddingTop: '4px', paddingBottom: '4px'}}/>
 
       <TorrentList
         queryResults={queryResults}
