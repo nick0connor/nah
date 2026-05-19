@@ -23,7 +23,7 @@ export function useSocket() {
 
     // Socket
     useEffect(() => {
-        const socket = io();
+        const socket = io(import.meta.env.DEV ? 'http://localhost:3000' : '');;
 
         socket.on("connect", () => {
             console.log("Socket connected to server");

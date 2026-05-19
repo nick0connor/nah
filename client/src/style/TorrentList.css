@@ -1,0 +1,52 @@
+.torrent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+}
+
+.torrent-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+    /* allows text truncation */
+    flex: 1;
+}
+
+.torrent-title {
+    color: white;
+    font-size: 0.9rem;
+    word-break: break-word;
+    margin: 0;
+    text-align: left;
+}
+
+.torrent-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.torrent-download {
+    flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+    .torrent-item {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .torrent-download {
+        align-self: flex-end;
+        width: 100%;
+    }
+
+    .torrent-download button {
+        width: 100%;
+    }
+}

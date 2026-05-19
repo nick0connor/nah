@@ -7,7 +7,11 @@ export default defineConfig({
   appType: 'spa',
   server: {
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': 'http://localhost:3000',
+      '/search': 'http://localhost:3000',
+      '/confirm': 'http://localhost:3000',
+      '/cancel': 'http://localhost:3000',
+      '/settings/paths': 'http://localhost:3000',
     }
   }
 })

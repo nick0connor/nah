@@ -1,6 +1,7 @@
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/esm/Button';
+import '../style/TorrentList.css'
 
 function TorrentList({
   queryResults,
@@ -16,29 +17,27 @@ function TorrentList({
           return (
             <ListGroup.Item
               as="li"
-              className="d-flex justify-content-between align-items-start darkbg-whitetext"
+              className='darkbg-whitetext torrent-item'
               key={index}
             >
-              <p className="ms-2 me-auto text-wrap text-break fs-6 fw-normal">{result.title}</p>
+              <div className='torrent-info'>
+                <p className='torrent-title'>{result.title}</p>
+                <div className='torrent-meta'>
+                  <Badge bg='success' pill>↑ {result.seeds}</Badge>
+                  <Badge bg='danger' pill>↓ {result.peers}</Badge>
+                  <Badge bg='primary' pill>{result.size}</Badge>
+                </div>
+              </div>
 
-              <Badge bg="success" pill>
-                ↑ {result.seeds}
-              </Badge>
-              <Badge bg="danger" pill>
-                ↓ {result.peers}
-              </Badge>
-              <Badge bg="primary">
-                {result.size}
-              </Badge>
-              <Badge
-                as={Button}
-                size='sm'
-                bg="light"
-                onClick={() => downloadClick(index)}
-                style={{ color: "black" }}
-              >
-                Download
-              </Badge>
+              <div className='torrent-download'>
+                <Button
+                  size="sm"
+                  variant="light"
+                  onClick={() => downloadClick(index)}
+                >
+                  Download
+                </Button>
+              </div>
             </ListGroup.Item>
           );
         })
