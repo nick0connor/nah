@@ -21,6 +21,9 @@ The first time you go to the WebUI for the program, you should be redirected to 
 
 <hr>
 
-There are a few more features I intend to work on in the future, but most likely at a slower pace. 
+There's still a good amount of things I want to do with this project. The list currently includes
 
-If any issues emerge and are brough to my attention, I will do my best to fix them!
+- Adding pages and modular # of results for search feature
+- Adding a timeout feature to prevent hanging on a dead torrent
+- Triggering a Plex library refresh after download is complete
+- Rewrite code to not be made of toothpicks held together with chewing gum
