@@ -2,7 +2,7 @@
 
 This is an all-in-one tool for torrent searching and installation, specifically for use with another service like Plex or Jellyfin. 
 
-Please note: This tool was developed for educational purposes and will thus not have the same rigidness that can be found in similar products/programs. It has been tested, but definitely not to exhaustion. 
+Please note: This tool was developed for educational purposes and will thus not have the same rigidity that can be found in similar products/programs. It has been tested, but definitely not to exhaustion. 
 
 <hr>
 
@@ -17,8 +17,6 @@ The first time you go to the WebUI for the program, you should be redirected to 
 
 <hr>
 
-I no longer consider NaH in active development, as it does everything I needed it to do well enough*.
+There are a few more features I intend to work on in the future, but most likely at a slower pace. 
 
-If any major issues emerge, I will come back fix them.
-
-<sub>\* Supposedly</sub>
+If any issues emerge and are brough to my attention, I will do my best to fix them!
