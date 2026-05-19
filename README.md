@@ -1,5 +1,9 @@
 # NaH - Netflix at Home
 
+<p align="center">
+<img width="190" height="190" alt="Image" src="https://github.com/user-attachments/assets/5284f454-0e81-4b2d-8304-cc0aa06fc642" />
+</p>
+
 This is an all-in-one tool for torrent searching and installation, specifically for use with another service like Plex or Jellyfin. 
 
 Please note: This tool was developed for educational purposes and will thus not have the same rigidity that can be found in similar products/programs. It has been tested, but definitely not to exhaustion. 
