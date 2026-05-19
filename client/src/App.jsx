@@ -50,7 +50,7 @@ function App() {
 
   // Redirect to settings if config paths are empty
   useEffect(() => {
-    fetch('http://localhost:3000/settings/paths')
+    fetch('/settings/paths')
       .then(res => res.json())
       .then(data => {
         if (!data.Movies || !data.TV) {

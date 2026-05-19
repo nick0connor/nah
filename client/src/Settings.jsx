@@ -10,13 +10,13 @@ function Settings() {
   const [formPaths, setFormPaths] = useState({ Movies: '', TV: '' });
 
   useEffect(() => {
-    fetch('http://localhost:3000/settings/paths')
+    fetch('/settings/paths')
       .then(res => res.json())
       .then(data => setFormPaths(data));
   }, []);
 
   const handleSubmit = async () => {
-    const res = await fetch('http://localhost:3000/settings/paths', {
+    const res = await fetch('/settings/paths', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formPaths)
