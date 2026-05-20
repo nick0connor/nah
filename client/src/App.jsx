@@ -32,7 +32,8 @@ function App() {
   const handleSearchClick = async (e) => {
     e.preventDefault();
     setSearchLoading(true);
-    handleSearch(searchText, mediaType).finally(() => setSearchLoading(false));
+    await handleSearch(searchText, mediaType, resultsLimit);
+    setSearchLoading(false);
   };
 
   const handleDownloadClick = async (index) => {

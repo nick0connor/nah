@@ -9,8 +9,8 @@ export function useTorrentManager(){
 
     const queryHasResults = () => ( queryResults && queryResults.length > 0);
 
-    const handleSearch = async (searchText, mediaType) => {
-        const results = await search(searchText, mediaType)
+    const handleSearch = async (searchText, mediaType, limit) => {
+        const results = await search(searchText, mediaType, limit);
         setQueryResults(results);
     };
 

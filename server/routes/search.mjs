@@ -1,18 +1,26 @@
 import express from "express";
 import TorrentSearchApi from "../TorrentSearchApi.mjs";
-import { mostRecentTorrent, mediaType, setMostRecentTorrent, setMediaType } from "../state.mjs";
+import { setMostRecentTorrent, setMediaType } from "../state.mjs";
 
 const router = express.Router();
 
 router.get("/search", async (req, res) => {
   const title = req.query.title;
-  setMediaType(req.query.media);
+  const media = req.query.media;
+  const limit = req.query.limit;
 
-  console.log(`Received ${mediaType}: '${title}'`)
+  console.log(`Received ${media}: '${title}' | Limit: ${limit}`);
 
-  setMostRecentTorrent(await TorrentSearchApi.search(title, mediaType, 20));
+  let searchResults;
+  if(limit == -1){
+    searchResults = await TorrentSearchApi.search(title, media);
+  } else {
+    searchResults = await TorrentSearchApi.search(title, media, limit);
+  }
 
-  res.json(mostRecentTorrent);
+  setMostRecentTorrent(searchResults);
+  setMediaType(media);
+  res.json(searchResults);
 });
 
 export default router;

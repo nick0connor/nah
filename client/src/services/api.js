@@ -1,7 +1,8 @@
 const BASE_URL = '';
 
-export async function search(title, media) {
-    const params = new URLSearchParams({ title, media });
+export async function search(title, media, limit) {
+    const params = new URLSearchParams({ title, media, limit });
+    console.log(`${BASE_URL}/search?${params}`);
     const res = await fetch(`${BASE_URL}/search?${params}`);
     return res.json();
 }
