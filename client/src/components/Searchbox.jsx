@@ -73,14 +73,15 @@ function Searchbox({
     <select 
       name="num-results-selector" 
       id="num-results-selector"
+      defaultValue={resultsLimit}
       onChange={(e) => setResultsLimit(e.target.value)}  
     >
-      <option value="-1" selected={resultsLimit==-1}>MAX</option>
-      <option value="10" selected={resultsLimit==10}>10</option>
-      <option value="15" selected={resultsLimit==15}>15</option>
-      <option value="20" selected={resultsLimit==20}>20</option>
-      <option value="25" selected={resultsLimit==25}>25</option>
-      <option value="30" selected={resultsLimit==30}>30</option>
+      <option value="-1">MAX</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
     </select>
   </>);
 }
