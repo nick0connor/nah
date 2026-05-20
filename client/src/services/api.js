@@ -1,14 +1,8 @@
 const BASE_URL = '';
 
-export async function search(query, media) {
-    const res = await fetch(`${BASE_URL}/search`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ query, media })
-    });
-
+export async function search(title, media) {
+    const params = new URLSearchParams({ title, media });
+    const res = await fetch(`${BASE_URL}/search?${params}`);
     return res.json();
 }
 

@@ -4,13 +4,13 @@ import { mostRecentTorrent, mediaType, setMostRecentTorrent, setMediaType } from
 
 const router = express.Router();
 
-router.post("/search", async (req, res) => {
-  const query = req.body.query;
-  setMediaType(req.body.media);
+router.get("/search", async (req, res) => {
+  const title = req.query.title;
+  setMediaType(req.query.media);
 
-  console.log(`Received ${mediaType}: '${query}'`)
+  console.log(`Received ${mediaType}: '${title}'`)
 
-  setMostRecentTorrent(await TorrentSearchApi.search(query, mediaType, 20));
+  setMostRecentTorrent(await TorrentSearchApi.search(title, mediaType, 20));
 
   res.json(mostRecentTorrent);
 });
