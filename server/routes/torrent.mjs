@@ -5,7 +5,7 @@ import path from 'path';
 import { getIO } from "../socket.mjs";
 import torrentClient from "../TorrentClient.mjs";
 import TorrentSearchApi from "../TorrentSearchApi.mjs";
-import { mostRecentTorrent, mediaType } from "../state.mjs";
+import { currentSearchResults, mediaType } from "../state.mjs";
 import config from '../../config.paths.json' with { type: 'json' };
 
 const router = express.Router();
@@ -42,11 +42,11 @@ function addTorrentAsync(torrentClient, magnet) {
 }
 
 router.post("/confirm", async (req, res) => {
-  if (!mostRecentTorrent || mostRecentTorrent.length === 0) {
+  if (!currentSearchResults || currentSearchResults.length === 0) {
     return res.status(400).json({ error: "No active torrent(s)" });
   }
 
-  const selected = mostRecentTorrent[parseInt(req.body.index)];
+  const selected = currentSearchResults[parseInt(req.body.index)];
   const magnet = await TorrentSearchApi.getMagnet(selected);
 
   try {

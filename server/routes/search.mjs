@@ -1,6 +1,6 @@
 import express from "express";
 import TorrentSearchApi from "../TorrentSearchApi.mjs";
-import { setMostRecentTorrent, setMediaType } from "../state.mjs";
+import { setCurrentSearchResults, setMediaType } from "../state.mjs";
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.get("/search", async (req, res) => {
     searchResults = await TorrentSearchApi.search(title, media, limit);
   }
 
-  setMostRecentTorrent(searchResults);
+  setCurrentSearchResults(searchResults);
   setMediaType(media);
   res.json(searchResults);
 });

@@ -1,8 +1,8 @@
-export let mostRecentTorrent = [];
+export let currentSearchResults = [];
 export let mediaType = '';
 
-export function setMostRecentTorrent(newerTorrent) {
-    mostRecentTorrent = newerTorrent;
+export function setCurrentSearchResults(newerResults) {
+    currentSearchResults = newerResults;
 }
 
 export function setMediaType(newType) {
