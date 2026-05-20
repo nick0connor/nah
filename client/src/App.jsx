@@ -27,6 +27,7 @@ function App() {
   const [isSearchLoading, setSearchLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [isDownloadLoading, setDownloadLoading] = useState(false);
+  const [resultsLimit, setResultsLimit] = useState(20);
 
   const handleSearchClick = async (e) => {
     e.preventDefault();
@@ -83,6 +84,8 @@ function App() {
         searchText={searchText}
         updateSearchText={setSearchText}
         isLoading={isSearchLoading}
+        resultsLimit={resultsLimit}
+        setResultsLimit={setResultsLimit}
       />
 
       <div style={{paddingTop: '4px', paddingBottom: '4px'}}/>
