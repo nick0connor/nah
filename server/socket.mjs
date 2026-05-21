@@ -1,6 +1,7 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 let io;
+let activeSocket;
 
 export function initSocket(server) {
   io = new Server(server, {
@@ -9,9 +10,18 @@ export function initSocket(server) {
       methods: ["GET", "POST"]
     }
   });
+
+  io.on('connection', (socket) => {
+    activeSocket = socket;
+  });
+
   return io;
 }
 
 export function getIO() {
   return io;
+}
+
+export function getSocket() {
+  return activeSocket;
 }

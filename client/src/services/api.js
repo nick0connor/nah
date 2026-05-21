@@ -7,13 +7,13 @@ export async function search(title, media, limit) {
     return res.json();
 }
 
-export async function download(index) {
+export async function download(link) {
     const res = await fetch(`${BASE_URL}/confirm`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ index })
+        body: JSON.stringify({ link })
     });
 
     return res.json();

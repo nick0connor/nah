@@ -17,13 +17,15 @@ export function useSocket() {
     }
 
     const [isSocketOnline, setSocketOnline] = useState(false);
+    const [fileList, setFileList] = useState(null);
 
-    // THROTTLE THE SOCKET UPDATES!!!!
     const lastUpdateRef = useRef(0);
+    const socketRef = useRef(null);
 
     // Socket
     useEffect(() => {
-        const socket = io(import.meta.env.DEV ? 'http://localhost:3000' : '');;
+        const socket = io(import.meta.env.DEV ? 'http://localhost:3000' : '');
+        socketRef.current = socket;
 
         socket.on("connect", () => {
             console.log("Socket connected to server");
@@ -39,12 +41,19 @@ export function useSocket() {
             }
         });
 
+        socket.on("fileList", (files) => setFileList(files));
+        
         return () => {
             console.log("Socket disconnected");
             socket.disconnect();
             setSocketOnline(false);
         };
     }, []);
+    
+    const confirmFileSelection = (infoHash, selectedIndices) => {
+        socketRef.current.emit("fileSelection", { infoHash, selectedIndices });
+        setFileList(null);
+    }
 
-    return { downloadProgress, resetProgress, isSocketOnline };
+    return { downloadProgress, resetProgress, isSocketOnline, fileList, confirmFileSelection };
 }

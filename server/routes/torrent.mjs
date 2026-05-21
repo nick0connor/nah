@@ -2,65 +2,96 @@ import express from "express";
 import fs from 'fs';
 import path from 'path';
 
-import { getIO } from "../socket.mjs";
+import { getIO, getSocket } from "../socket.mjs";
 import torrentClient from "../TorrentClient.mjs";
 import TorrentSearchApi from "../TorrentSearchApi.mjs";
 import { currentSearchResults, mediaType } from "../state.mjs";
 import config from '../../config.paths.json' with { type: 'json' };
 
 const router = express.Router();
-
-function addTorrentAsync(torrentClient, magnet) {
-  const io = getIO();
-
-  return new Promise((resolve, reject) => {
-    torrentClient.add(magnet, { path: config[mediaType] }, (torrent) => {
-
-      torrent.on('download', () => {
-        const progress = (torrent.progress * 100).toFixed(2);
-        const speed = (torrent.downloadSpeed / 1048576).toFixed(2);
-
-        io.emit("progress", {
-          infoHash: torrent.infoHash,
-          progress: progress,
-          speed: speed
-        });
-
-        process.stdout.write(`\rProgress: ${progress}% | Speed: ${speed} MB/s`)
-      });
-
-      torrent.on("done", () => {
-        process.stdout.write("\n");
-        console.log("Download complete:", torrent.infoHash);
-      });
-
-      torrent.on("error", reject);
-
-      resolve(torrent);
-    });
-  })
+const byteToGbMbKb = (bytes) => {
+  let GB = bytes / 1073741824;
+  if (GB >= 1)
+    return `${GB.toFixed(2)} GB`;
+  GB *= 1024;
+  if (GB >= 0.1)
+    return `${GB.toFixed(2)} MB`;
+  GB *= 1024;
+  return `${GB.toFixed(2)} KB`;
 }
 
+/*
+  The torrent object TorrentSearchApi wants consists of
+  { title, link, seeds, peers, time, size, desc, provider }
+  - link is url to .torrent file
+
+  For TorrentClient.add(torrentId, ...), torrentId can take
+  - magnet uri (string) => await TorrentSearch.getMagnet(...)
+  - http(s) url to a torrent file (string) => pass link
+*/
 router.post("/confirm", async (req, res) => {
-  if (!currentSearchResults || currentSearchResults.length === 0) {
-    return res.status(400).json({ error: "No active torrent(s)" });
-  }
+  const link = req.body.link;
+  if (!link) return res.status(404).json({ error: "Non-valid http(s) link sent" });
 
-  const selected = currentSearchResults[parseInt(req.body.index)];
-  const magnet = await TorrentSearchApi.getMagnet(selected);
+  const io = getIO();
 
-  try {
-    const torrent = await addTorrentAsync(torrentClient, magnet);
-    console.log(`Downloading ${torrent.infoHash}`);
+  torrentClient.add(link, {
+    path: config[mediaType],
+  }, (torrent) => { // This function calls when THIS torrent's ready to be used (metadata available)
+    torrent.pause();
 
-    res.json({
-      response: "started",
-      infoHash: torrent.infoHash
+    torrent.files.forEach(file => file.deselect());
+    console.log("selections before:", JSON.stringify(torrent._selections));
+
+    io.emit("fileList", {
+      infoHash: torrent.infoHash,
+      files: torrent.files.map((file, index) => ({
+        index: index,
+        path: file.path,
+        name: file.name,
+        size: byteToGbMbKb(file.size)
+      }))
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to start torrent" });
+
+    getSocket().on("fileSelection", ({ infoHash, selectedIndices }) => {
+      if (infoHash !== torrent.infoHash) return;
+      selectedIndices.forEach(index => torrent.files[index].select());
+      console.log("selections after:", JSON.stringify(torrent._selections));
+      torrent.resume();
+    });
+
+    torrent.on("download", () => {
+      const progress = (torrent.progress * 100).toFixed(2);
+      const speed = byteToGbMbKb(torrent.downloadSpeed);
+
+      io.emit("progress", {
+        infoHash: torrent.infoHash,
+        progress: progress,
+        speed: speed
+      });
+
+      process.stdout.write(`\rProgress: ${progress}% | Speed: ${speed}/s     `);
+    });
+
+    torrent.on("warning", err => {
+      const ignored = [
+        "tracker request timed out",
+        "ENOTFOUND",
+        "No nodes to query"
+      ];
+      if (ignored.some(msg => err.message.includes(msg))) return;
+      console.log("TORRENT WARNING:", err.message);
+    });
+
+    torrent.on("error", err => {
+      console.log("TORRENT ERROR:", err.message);
+    });
+
+    torrent.on("noPeers", trackerType => {
+      console.log("NO PEERS FROM:", trackerType);
+    });
   }
+  );
 });
 
 router.post("/cancel", async (req, res) => {

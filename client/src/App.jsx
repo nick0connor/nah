@@ -6,12 +6,19 @@ import { useTorrentManager } from './hooks/useTorrentManager';
 import { useSocket } from './hooks/useSocket';
 import SocketToast from "./components/SocketToast";
 import LoadingOverlay from './components/LoadingOverlay';
+import FileSelector from './components/FileSelector';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './style/App.css';
 
 // ALL CODE HERE IS UI OR CALLING LOGIC/DATA FUNCTIONS
 function App() {
-  const { downloadProgress, resetProgress, isSocketOnline } = useSocket();
+  const { 
+    downloadProgress, 
+    resetProgress, 
+    isSocketOnline, 
+    fileList, 
+    confirmFileSelection 
+  } = useSocket();
 
   const {
     queryResults,
@@ -36,10 +43,9 @@ function App() {
     setSearchLoading(false);
   };
 
-  const handleDownloadClick = async (index) => {
-    console.log('Download clicked')
+  const handleDownloadClick = async (link) => {
     setDownloadLoading(true);
-    const result = await handleDownload(index);
+    const result = await handleDownload(link);
     setDownloadLoading(false);
     setModalActive(true);
   };
@@ -69,6 +75,11 @@ function App() {
         <i className="bi bi-gear-fill" style={{ fontSize: '1.5rem', color: 'white' }} />
       </a>
 
+      <FileSelector
+        fileList={fileList}
+        onConfirm={confirmFileSelection}
+      />
+
       <ProgressModal
         data={downloadProgress}
         cancelClick={handleCancelClick}
@@ -89,7 +100,7 @@ function App() {
         setResultsLimit={setResultsLimit}
       />
 
-      <div style={{paddingTop: '4px', paddingBottom: '4px'}}/>
+      <div style={{ paddingTop: '4px', paddingBottom: '4px' }} />
 
       <TorrentList
         queryResults={queryResults}

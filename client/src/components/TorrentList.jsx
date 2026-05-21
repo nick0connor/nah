@@ -33,7 +33,7 @@ function TorrentList({
                 <Button
                   size="sm"
                   variant="light"
-                  onClick={() => downloadClick(index)}
+                  onClick={() => downloadClick(result.link)}
                 >
                   Download
                 </Button>

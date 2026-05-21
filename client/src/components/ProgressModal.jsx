@@ -15,7 +15,7 @@ function ProgressModal({ data, cancelClick, closeClick, ...props }) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {`Progress: ${data.progress}%\nSpeed: ${data.speed} MB/s`}
+        {`Progress: ${data.progress}%\nSpeed: ${data.speed}/s`}
       </Modal.Body>
       <Modal.Footer>
         <Button

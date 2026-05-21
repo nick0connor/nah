@@ -16,10 +16,12 @@ export function useTorrentManager(){
 
     const [currentInfoHash, setCurrentInfoHash] = useState("");
     
-    const handleDownload = async (index) => {
-        if(!queryHasResults) return;
-        const results = await download(index);
-        setCurrentInfoHash(results.infoHash);
+    const handleDownload = async (link) => {
+        // if(!queryHasResults) return;
+        const results = await download(link);
+
+        console.log("Results of Download: ", results);
+        // setCurrentInfoHash(results.infoHash);
         return results;
     };
 
